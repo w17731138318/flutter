@@ -17,13 +17,21 @@ class _HomePageState extends State<HomePage> {
             return Dismissible(
               key: Key(list[index]),
               direction: DismissDirection.endToStart,
-              child: ListTile(title: Text('${list[index]}')),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: new Border(bottom: BorderSide(color: Colors.grey[300], width: 1.0)),
+                ),
+                child: ListTile(title: Text('${list[index]}')),
+              ),
               background: Container(
                 color: Colors.redAccent,
               ),
               onDismissed: (direction) {
                 setState(() {
-                  Scaffold.of(context).showSnackBar(SnackBar(content: Text("${list[index]}")));
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                    content: Text("${list[index]}被移除"),
+                  ));
                   list.removeAt(index);
                 });
               },
