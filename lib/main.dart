@@ -1,3 +1,6 @@
+import 'package:controller/pages/about/about.dart';
+import 'package:controller/pages/home/home.dart';
+import 'package:controller/pages/setting/setting.dart';
 import 'package:controller/provider/app_config_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +22,7 @@ class MyApp extends StatelessWidget {
                     primaryColor: Provider.of<AppConfigModel>(context, listen: false).themeMode,
                   ),
                   darkTheme: ThemeData.dark(),
-                  home: HomePage(title: '展厅管理'),
+                  home: MainPage(title: '展厅管理'),
                 )
               : MaterialApp(
                   debugShowCheckedModeBanner: false,
@@ -29,7 +32,7 @@ class MyApp extends StatelessWidget {
                       : ThemeData(
                           primaryColor: Provider.of<AppConfigModel>(context, listen: false).themeMode,
                         ),
-                  home: HomePage(title: '展厅管理'),
+                  home: MainPage(title: '展厅管理'),
                 );
         },
       ),
@@ -37,18 +40,20 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title}) : super(key: key);
+class MainPage extends StatefulWidget {
+  MainPage({Key key, this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _MainPageState createState() => _MainPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _MainPageState extends State<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _btnIndex = 1;
+  List<Widget> pages = [HomePage(), SettingPage(), AboutPage()];
+  int _currentIndex = 0;
   @override
   void initState() {
     super.initState();
@@ -59,22 +64,20 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        leading: Builder(
-          builder: (BuildContext context) {
-            return Stack(
-              children: <Widget>[
-                IconButton(
-                  tooltip: '关于我',
-                  icon: Icon(Icons.account_circle),
-                  onPressed: () {
-                    setState(() {
-                      _btnIndex = 1;
-                    });
-                    _scaffoldKey.currentState.openDrawer();
-                  },
-                ),
-              ],
-            );
+        leading: IconButton(
+          icon: ClipOval(
+            child: Image.asset(
+              'images/CircleAvatar.png',
+              width: 45.0,
+              height: 45.0,
+              fit: BoxFit.contain,
+            ),
+          ),
+          onPressed: () {
+            setState(() {
+              _btnIndex = 1;
+            });
+            _scaffoldKey.currentState.openDrawer();
           },
         ),
         centerTitle: true,
@@ -92,11 +95,21 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[],
-        ),
+      body: pages[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        selectedFontSize: 12,
+        unselectedFontSize: 12,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('主页')),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), title: Text('设置')),
+          BottomNavigationBarItem(icon: Icon(Icons.person), title: Text('我')),
+        ],
       ),
       drawer: buildDrawer(),
     );
