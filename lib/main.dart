@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
         builder: (context, appConfigModel, _) {
           return appConfigModel.darkMode == 2
               ? MaterialApp(
+                  debugShowCheckedModeBanner: false,
                   title: '展厅管理',
                   theme: ThemeData(
                     primaryColor: Provider.of<AppConfigModel>(context, listen: false).themeMode,
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
                   home: HomePage(title: '展厅管理'),
                 )
               : MaterialApp(
+                  debugShowCheckedModeBanner: false,
                   title: '展厅管理',
                   theme: appConfigModel.darkMode == 1
                       ? ThemeData.dark()
