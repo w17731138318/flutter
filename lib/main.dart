@@ -85,7 +85,9 @@ class _MainPageState extends State<MainPage> {
         actions: <Widget>[
           IconButton(
             tooltip: '修改主题',
-            icon: const Icon(Icons.color_lens),
+            icon: Icon(
+              Icons.color_lens,
+            ),
             onPressed: () {
               setState(() {
                 _btnIndex = 2;
@@ -105,6 +107,9 @@ class _MainPageState extends State<MainPage> {
         },
         selectedFontSize: 12,
         unselectedFontSize: 12,
+        showSelectedLabels: true,
+        showUnselectedLabels: false,
+        selectedItemColor: Provider.of<AppConfigModel>(context, listen: false).themeMode,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('主页')),
           BottomNavigationBarItem(icon: Icon(Icons.settings), title: Text('设置')),

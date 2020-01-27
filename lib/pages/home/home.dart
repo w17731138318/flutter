@@ -10,33 +10,38 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.greenAccent,
+      color: Colors.grey,
       child: ListView.builder(
-          itemCount: list.length,
-          itemBuilder: (context, index) {
-            return Dismissible(
-              key: Key(list[index]),
-              direction: DismissDirection.endToStart,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: new Border(bottom: BorderSide(color: Colors.grey[300], width: 1.0)),
-                ),
-                child: ListTile(title: Text('${list[index]}')),
+        itemCount: list.length,
+        itemBuilder: (context, index) {
+          return Dismissible(
+            key: Key(list[index]),
+            direction: DismissDirection.endToStart,
+            child: Container(
+              decoration: BoxDecoration(
+//                color: Colors.white,
+                border: new Border(bottom: BorderSide(color: Colors.grey[300], width: 1.0)),
               ),
-              background: Container(
-                color: Colors.redAccent,
-              ),
-              onDismissed: (direction) {
-                setState(() {
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    content: Text("${list[index]}被移除"),
-                  ));
-                  list.removeAt(index);
-                });
-              },
-            );
-          }),
+              child: ListTile(
+                  title: Text(
+                '${list[index]}',
+//                style: TextStyle(color: Colors.black54),
+              )),
+            ),
+            background: Container(
+              color: Colors.redAccent,
+            ),
+            onDismissed: (direction) {
+              setState(() {
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text("${list[index]}被移除"),
+                ));
+                list.removeAt(index);
+              });
+            },
+          );
+        },
+      ),
     );
   }
 }
