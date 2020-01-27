@@ -11,19 +11,22 @@ class MyApp extends StatelessWidget {
       providers: [ChangeNotifierProvider(create: (_) => AppConfigModel())],
       child: Consumer<AppConfigModel>(
         builder: (context, appConfigModel, _) {
-          return appConfigModel.darkMode == 0
+          return appConfigModel.darkMode == 2
               ? MaterialApp(
                   title: '展厅管理',
-                  debugShowCheckedModeBanner: false,
                   theme: ThemeData(
                     primaryColor: Provider.of<AppConfigModel>(context, listen: false).themeMode,
                   ),
+                  darkTheme: ThemeData.dark(),
                   home: HomePage(title: '展厅管理'),
                 )
               : MaterialApp(
                   title: '展厅管理',
-                  debugShowCheckedModeBanner: false,
-                  theme: ThemeData.dark(),
+                  theme: appConfigModel.darkMode == 1
+                      ? ThemeData.dark()
+                      : ThemeData(
+                          primaryColor: Provider.of<AppConfigModel>(context, listen: false).themeMode,
+                        ),
                   home: HomePage(title: '展厅管理'),
                 );
         },
@@ -122,8 +125,8 @@ class _HomePageState extends State<HomePage> {
             // DrawerHeader consumes top MediaQuery padding.
             removeTop: true,
             child: const ListTile(
-              leading: Icon(Icons.payment),
-              title: Text('Placeholder'),
+              leading: Icon(Icons.home),
+              title: Text('主页'),
             ),
           ),
           MediaQuery.removePadding(
@@ -131,8 +134,8 @@ class _HomePageState extends State<HomePage> {
             // DrawerHeader consumes top MediaQuery padding.
             removeTop: true,
             child: const ListTile(
-              leading: Icon(Icons.payment),
-              title: Text('Placeholder'),
+              leading: Icon(Icons.info),
+              title: Text('我的信息'),
             ),
           ),
         ],
@@ -145,32 +148,47 @@ class _HomePageState extends State<HomePage> {
       child: ListView.builder(
         itemCount: 1 + Provider.of<AppConfigModel>(context, listen: false).themeMap.length,
         itemBuilder: (BuildContext context, int index) {
-          return buildColorTile(index - 1);
+          /// 前三项留给 夜间模式
+          return buildAppConfigModelTileItems(index - 3);
         },
       ),
     );
   }
 
-  buildColorTile(int index) {
-    if (index < 0) {
+  buildAppConfigModelTileItems(int index) {
+    if (index < -2) {
       return ListTile(
-        leading: Icon(Icons.wb_sunny),
-        title: Container(
-          padding: EdgeInsets.only(right: 150),
-          child: Switch(
-            value: Provider.of<AppConfigModel>(context, listen: false).darkMode == 1,
-            onChanged: (bool val) {
-              if (val) {
-                Provider.of<AppConfigModel>(context, listen: false).changeMode(1);
-              } else {
-                Provider.of<AppConfigModel>(context, listen: false).changeMode(0);
-              }
-              setState(() {});
-            },
-          ),
+        leading: Icon(
+          Icons.brightness_5,
+          color: Colors.grey,
         ),
+        title: Text('关闭夜间模式'),
+        onTap: () {
+          Provider.of<AppConfigModel>(context, listen: false).changeMode(0);
+        },
+      );
+    } else if (index < -1 && index > -3) {
+      return ListTile(
+        leading: Icon(
+          Icons.brightness_7,
+        ),
+        title: Text('开启夜间模式'),
+        onTap: () {
+          Provider.of<AppConfigModel>(context, listen: false).changeMode(1);
+        },
+      );
+    } else if (index < 0 && index > -2) {
+      return ListTile(
+        leading: Icon(
+          Icons.settings,
+        ),
+        title: Text('跟随系统'),
+        onTap: () {
+          Provider.of<AppConfigModel>(context, listen: false).changeMode(2);
+        },
       );
     } else {
+      /// 主题颜色 列表
       String colorKey = Provider.of<AppConfigModel>(context, listen: false).themeMap.keys.elementAt(index);
       Color color = Provider.of<AppConfigModel>(context, listen: false).themeMap.values.elementAt(index);
       return ListTile(
